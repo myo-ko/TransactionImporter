@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using TransactionImporter.DbContexts;
 using TransactionImporter.Models;
 using TransactionImporter.Services.Csv;
+using TransactionImporter.Services.Xml;
 
 namespace TransactionImporter.Controllers.Api
 {
@@ -33,7 +34,7 @@ namespace TransactionImporter.Controllers.Api
 
         [HttpPost]
         [Route("api/transactions")]
-        public IActionResult ImportFromFile(IFormFile file, [FromServices] CsvService csvService)
+        public IActionResult ImportFromFile(IFormFile file, [FromServices] CsvService csvService, [FromServices] XmlService xmlService)
         {
             int insertCount = 0;
             var transactions = new List<Transaction>();
@@ -70,6 +71,22 @@ namespace TransactionImporter.Controllers.Api
             if (extension.ToLower() == ".csv")
             {
                 var readResult = csvService.ReadTransaction(file);
+                if (!readResult.Success)
+                {
+                    return BadRequest(new
+                    {
+                        Message = readResult.Message
+                    });
+                }
+
+                transactions = readResult.Transactions;
+            }
+            #endregion
+
+            #region Read Xml
+            if (extension.ToLower() == ".xml")
+            {
+                var readResult = xmlService.ReadTransaction(file);
                 if (!readResult.Success)
                 {
                     return BadRequest(new

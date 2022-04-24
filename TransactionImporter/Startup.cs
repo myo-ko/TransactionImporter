@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TransactionImporter.DbContexts;
 using TransactionImporter.Services.Csv;
+using TransactionImporter.Services.Xml;
 
 namespace TransactionImporter
 {
@@ -33,6 +34,7 @@ namespace TransactionImporter
             services.AddDbContext<TransactionDbContext>(options => options.UseSqlite("Data Source=TransactionDB.db;"));
 
             services.AddScoped<CsvService>();
+            services.AddScoped<XmlService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
