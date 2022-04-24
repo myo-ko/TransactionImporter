@@ -1,1 +1,22 @@
 ﻿@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+<div class="container">
+    <div class="row">
+        <div class="p-5 mx-auto">
+            <form id="my-form" method="post">
+                <div class="mb-3">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                    <div class="invalid-feedback" id="error-region">
+                        
+                    </div>
+                </div>
+                <button class="btn btn-lg btn-primary" type="submit">Import</button>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/home/transactions.js"></script>
+} 
