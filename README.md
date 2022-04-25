@@ -4,6 +4,7 @@ This is task assessment assignment of candidate Myo Ko Ko.
 - .net core 3.1
 - entity framework core
 - sqlite
+- JQuery
 - Visual Studio 2019
 ## Setup
 1. Clone or download the project.
@@ -14,3 +15,4 @@ This is task assessment assignment of candidate Myo Ko Ko.
 ## Notes
 - Database migration is created using Entity Framework Core. Migration files are under `Migrations` folder.
 - The 2 sample files (csv and xml) are included withing `Exta` folder.
+- The application compose of mainly APIs. JQuery is then used in frontend to access these APIs.
