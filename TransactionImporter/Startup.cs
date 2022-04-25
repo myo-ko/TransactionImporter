@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TransactionImporter.DbContexts;
+using TransactionImporter.Services.Csv;
+using TransactionImporter.Services.Xml;
 
 namespace TransactionImporter
 {
@@ -25,7 +29,12 @@ namespace TransactionImporter
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllersWithViews().AddNewtonsoftJson();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddDbContext<TransactionDbContext>(options => options.UseSqlite("Data Source=TransactionDB.db;"));
+
+            services.AddScoped<CsvService>();
+            services.AddScoped<XmlService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,9 +43,12 @@ namespace TransactionImporter
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -44,7 +56,9 @@ namespace TransactionImporter
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                   name: "default",
+                   pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
