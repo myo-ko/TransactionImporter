@@ -12,6 +12,7 @@ using TransactionImporter.DbContexts;
 using TransactionImporter.Models;
 using TransactionImporter.Services.Csv;
 using TransactionImporter.Services.Xml;
+using TransactionImporter.ViewModels;
 
 namespace TransactionImporter.Controllers.Api
 {
@@ -21,15 +22,80 @@ namespace TransactionImporter.Controllers.Api
     {
         private readonly TransactionDbContext dbContext;
 
-        public TransactionController(TransactionDbContext _context1) 
+        public TransactionController(TransactionDbContext _context1)
         {
             dbContext = _context1;
         }
 
+        [HttpPost]
         [Route("api/transactions/currency")]
-        public IActionResult GetTransactions()
+        public IActionResult GetTransactionsByCurrency([FromBody] string currency)
         {
-            return ComposeResult();
+            #region Validation
+            if (string.IsNullOrEmpty(currency))
+            {
+                return BadRequest(new
+                {
+                    Message = "Currency is required."
+                });
+            }
+            #endregion
+
+            var transactions = dbContext.Transactions.Where(x => x.Currency.ToLower() == currency.ToLower())
+                .Select(x => TransactionViewModel.FromTransactionModel(x))
+                .ToList();
+
+            return ComposeResult(transactions);
+        }
+
+        [HttpPost]
+        [Route("api/transactions/date-range")]
+        public IActionResult GetTransactionsByDateRange([FromBody] DateTime? start, [FromBody] DateTime? end)
+        {
+            #region Validation
+            if (!start.HasValue)
+            {
+                return BadRequest(new
+                {
+                    Message = "Start date is required."
+                });
+            }
+
+            if (!end.HasValue)
+            {
+                return BadRequest(new
+                {
+                    Message = "End date is required."
+                });
+            }
+            #endregion
+
+            var transactions = dbContext.Transactions.Where(x => x.TransactionDate >= start.Value && x.TransactionDate <= end.Value)
+                .Select(x => TransactionViewModel.FromTransactionModel(x))
+                .ToList();
+
+            return ComposeResult(transactions);
+        }
+
+        [HttpPost]
+        [Route("api/transactions/status")]
+        public IActionResult GetTransactionsByStatus([FromBody] int? status)
+        {
+            #region Validation
+            if (!status.HasValue)
+            {
+                return BadRequest(new
+                {
+                    Message = "Status is required."
+                });
+            }
+            #endregion
+
+            var transactions = dbContext.Transactions.Where(x => x.Status == (Status)status)
+                .Select(x => TransactionViewModel.FromTransactionModel(x))
+                .ToList();
+
+            return ComposeResult(transactions);
         }
 
         [HttpPost]
@@ -96,7 +162,7 @@ namespace TransactionImporter.Controllers.Api
                 }
 
                 transactions = readResult.Transactions;
-            } 
+            }
             #endregion
 
             #region Save into DB
@@ -108,7 +174,7 @@ namespace TransactionImporter.Controllers.Api
                     dbContext.SaveChanges();
                     insertCount++;
                 }
-            } 
+            }
             #endregion
 
             return ComposeResult(null, $"{insertCount} record(s) inserted.");
@@ -120,9 +186,5 @@ namespace TransactionImporter.Controllers.Api
             return new JsonResult(new ApiResponse(data, message));
         }
 
-        protected JsonResult ComposeError(object data = null)
-        {
-            return new JsonResult(new ApiResponse(data));
-        }
     }
 }
