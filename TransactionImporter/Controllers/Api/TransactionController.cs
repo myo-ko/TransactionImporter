@@ -27,12 +27,21 @@ namespace TransactionImporter.Controllers.Api
             dbContext = _context1;
         }
 
+        [HttpGet]
+        [Route("api/currency/all")]
+        public IActionResult GetAllCurrency()
+        {
+            var currency = dbContext.Transactions.Select(x => x.Currency).Distinct().ToList();
+
+            return ComposeResult(currency);
+        }
+
         [HttpPost]
         [Route("api/transactions/currency")]
-        public IActionResult GetTransactionsByCurrency([FromBody] string currency)
+        public IActionResult GetTransactionsByCurrency([FromBody] CurrencyViewModel request)
         {
             #region Validation
-            if (string.IsNullOrEmpty(currency))
+            if (string.IsNullOrEmpty(request.currency))
             {
                 return BadRequest(new
                 {
@@ -41,7 +50,7 @@ namespace TransactionImporter.Controllers.Api
             }
             #endregion
 
-            var transactions = dbContext.Transactions.Where(x => x.Currency.ToLower() == currency.ToLower())
+            var transactions = dbContext.Transactions.Where(x => x.Currency.ToLower() == request.currency.ToLower())
                 .Select(x => TransactionViewModel.FromTransactionModel(x))
                 .ToList();
 
@@ -50,10 +59,10 @@ namespace TransactionImporter.Controllers.Api
 
         [HttpPost]
         [Route("api/transactions/date-range")]
-        public IActionResult GetTransactionsByDateRange([FromBody] DateTime? start, [FromBody] DateTime? end)
+        public IActionResult GetTransactionsByDateRange([FromBody] DateRangeViewModel request)
         {
             #region Validation
-            if (!start.HasValue)
+            if (!request.start.HasValue)
             {
                 return BadRequest(new
                 {
@@ -61,7 +70,7 @@ namespace TransactionImporter.Controllers.Api
                 });
             }
 
-            if (!end.HasValue)
+            if (!request.end.HasValue)
             {
                 return BadRequest(new
                 {
@@ -70,7 +79,7 @@ namespace TransactionImporter.Controllers.Api
             }
             #endregion
 
-            var transactions = dbContext.Transactions.Where(x => x.TransactionDate >= start.Value && x.TransactionDate <= end.Value)
+            var transactions = dbContext.Transactions.Where(x => x.TransactionDate >= request.start.Value && x.TransactionDate <= request.end.Value)
                 .Select(x => TransactionViewModel.FromTransactionModel(x))
                 .ToList();
 
@@ -79,10 +88,10 @@ namespace TransactionImporter.Controllers.Api
 
         [HttpPost]
         [Route("api/transactions/status")]
-        public IActionResult GetTransactionsByStatus([FromBody] int? status)
+        public IActionResult GetTransactionsByStatus([FromBody] StatusViewModel request)
         {
             #region Validation
-            if (!status.HasValue)
+            if (!request.status.HasValue)
             {
                 return BadRequest(new
                 {
@@ -91,7 +100,7 @@ namespace TransactionImporter.Controllers.Api
             }
             #endregion
 
-            var transactions = dbContext.Transactions.Where(x => x.Status == (Status)status)
+            var transactions = dbContext.Transactions.Where(x => x.Status == (Status)request.status.Value)
                 .Select(x => TransactionViewModel.FromTransactionModel(x))
                 .ToList();
 

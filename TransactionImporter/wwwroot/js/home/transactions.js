@@ -44,4 +44,131 @@
         return false;
     })
 
+
+    // Fetch with Status
+    $('#frmStatus').on('submit', function (e) {
+ 
+        $('#tblStatus tbody tr').remove();
+
+        e.preventDefault();
+
+        $.ajax({
+            url: '/api/transactions/status',
+            method: 'post',
+            data: JSON.stringify({
+                status: $('#cboStatus').val(),
+            }),
+            contentType: 'application/json',
+            success: function (r) {
+                var data = r.data;
+
+                if (!data || data.length <= 0) {
+                    $('<tr />', {
+                        html: `<td colspan="3" class="text-center">No data</td>`
+                    }).appendTo('#tblStatus tbody');
+                    return;
+                }
+
+                $.each(data, function (index, item) {
+                    $('<tr />', {
+                        html: `<td>${item.transactionId}</td><td>${item.payment}</td><td>${item.status}</td>`
+                    })
+                    .appendTo('#tblStatus tbody');
+                })
+            },
+            error: function (e) {
+                alert('An error occurred.');
+            },
+        });
+
+    })
+
+    // Fetch with Currency
+    $('#frmCurrency').on('submit', function (e) {
+
+        $('#tblCurrency tbody tr').remove();
+
+        e.preventDefault();
+
+        $.ajax({
+            url: '/api/transactions/currency',
+            method: 'post',
+            data: JSON.stringify({
+                currency: $('#cboCurrency').val(),
+            }),
+            contentType: 'application/json',
+            success: function (r) {
+                var data = r.data;
+
+                if (!data || data.length <= 0) {
+                    $('<tr />', {
+                        html: `<td colspan="3" class="text-center">No data</td>`
+                    }).appendTo('#tblCurrency tbody');
+                    return;
+                }
+
+                $.each(data, function (index, item) {
+                    $('<tr />', {
+                        html: `<td>${item.transactionId}</td><td>${item.payment}</td><td>${item.status}</td>`
+                    }).appendTo('#tblCurrency tbody');
+                })
+            },
+            error: function (e) {
+                alert(e.responseJSON.message ?? 'An error occurred.');
+            },
+        });
+
+    })
+
+    // Fetch with Date Range
+    $('#frmDate').on('submit', function (e) {
+
+        $('#tblDate tbody tr').remove();
+
+        e.preventDefault();
+
+        $.ajax({
+            url: '/api/transactions/date-range',
+            method: 'post',
+            data: JSON.stringify({
+                start: $('#dtpStart').val(),
+                end: $('#dtpEnd').val(),
+            }),
+            contentType: 'application/json',
+            success: function (r) {
+                var data = r.data;
+
+                if (!data || data.length <= 0) {
+                    $('<tr />', {
+                        html: `<td colspan="3" class="text-center">No data</td>`
+                    }).appendTo('#tblDate tbody');
+                    return;
+                }
+
+                $.each(data, function (index, item) {
+                    $('<tr />', {
+                        html: `<td>${item.transactionId}</td><td>${item.payment}</td><td>${item.status}</td>`
+                    }).appendTo('#tblDate tbody');
+                })
+            },
+            error: function (e) {
+                alert(e.responseJSON.message ?? 'An error occurred.');
+            },
+        });
+
+    })
+
+    // Get all currencies for currency choice
+    $.ajax({
+        url: '/api/currency/all',
+        method: 'get',
+        success: function (r) {
+            var currencies = r.data;
+            if (currencies.length > 0) {
+                $.each(currencies, function (index, item) {
+                    $('<option >', { value: item, text: item }).appendTo('#cboCurrency');
+                })
+            }
+        }
+    })
 })(jQuery)

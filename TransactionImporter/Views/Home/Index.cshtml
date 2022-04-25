@@ -1,7 +1,7 @@
 ﻿@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 <div class="container">
     <div class="row">
-        <div class="p-5 mx-auto">
+        <div class="col-lg-6">
             <form id="my-form" method="post">
                 <div class="mb-3">
                     <div class="custom-file">
@@ -14,6 +14,97 @@
                 </div>
                 <button class="btn btn-lg btn-primary" type="submit">Import</button>
             </form>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    Fetch by Currency
+                </div>
+                <div class="card-body">
+                    <form id="frmCurrency" class="form-row mb-1" method="post">
+                        <div class="input-group row">
+                            <div class="col-8">
+                                <select class="form-control" id="cboCurrency">
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-outline-primary" type="submit">Fetch</button>
+                            </div>
+                        </div>
+                    </form>
+                    <table class="table table-sm" id="tblCurrency">
+                        <thead>
+                            <tr>
+                                <th>Transaction Id</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card my-1">
+                <div class="card-header">
+                    Fetch by Status
+                </div>
+                <div class="card-body">
+                    <form id="frmStatus" class="form-row mb-1" method="post">
+                        <div class="input-group row">
+                            <div class="col-8">
+                                <select class="form-control" id="cboStatus">
+                                    <option value="0">Approved</option>
+                                    <option value="1">Failed</option>
+                                    <option value="2">Finished</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <button class="btn btn-outline-primary" type="submit">Fetch</button>
+                            </div>
+                        </div>
+                    </form>
+                    <table class="table table-sm" id="tblStatus">
+                        <thead>
+                            <tr>
+                                <th>Transaction Id</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    Fetch by Date Range
+                </div>
+                <div class="card-body">
+                    <form id="frmDate" class="form-row mb-1" method="post">
+                        <div class="input-group row">
+                            <div class="col-5">
+                                <input type="date" class="form-control" id="dtpStart" />
+                            </div>
+                            <div class="col-5">
+                                <input type="date" class="form-control" id="dtpEnd" />
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-outline-primary" type="submit">Fetch</button>
+                            </div>
+                        </div>
+                    </form>
+                    <table class="table table-sm" id="tblDate">
+                        <thead>
+                            <tr>
+                                <th>Transaction Id</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
