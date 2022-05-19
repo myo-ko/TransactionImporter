@@ -16,12 +16,14 @@ phases:
     commands:
       - echo Build started on `date`
       - dotnet build TransactionImporter/TransactionImporter.csproj
+      - echo Update database on `date`
+      - dotnet ef database update
       
   post_build:
     commands:
       - echo Publish started on `date`
       # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/dotnet-linux-platform-bundle-app.html
-      - dotnet publish -c release -o ./build_output TransactionImporter/TransactionImporter.csproj
+      - dotnet publish -c release -o ./build_output TransactionImporter/TransactionImporter.csproj --self-contained false
       
 artifacts:
   files:
