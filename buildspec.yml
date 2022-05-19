@@ -6,6 +6,9 @@ phases:
   install:
     runtime-versions:
       dotnet: latest
+    commands:
+      - echo Installing Entity Framework Core tools reference - .NET CLI
+      - dotnet tool install --global dotnet-ef
       
   pre_build:
     commands:
