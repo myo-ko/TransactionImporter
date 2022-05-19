@@ -20,7 +20,7 @@ phases:
       - echo Build started on `date`
       - dotnet build TransactionImporter/TransactionImporter.csproj
       - echo Update database on `date`
-      - dotnet ef database update
+      - dotnet ef database update --project="TransactionImporter/TransactionImporter.csproj"
       
   post_build:
     commands:
